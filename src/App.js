@@ -4,9 +4,8 @@ import Excalidraw, {
   exportToSvg,
   exportToBlob
 } from "@excalidraw/excalidraw";
-import InitialData from "./initialData";
 import Sidebar from "./sidebar/sidebar";
-import axios from "axios";
+import { updateImageAction } from "./actions";
 
 import "./styles.scss";
 import initialData from "./initialData";
@@ -30,7 +29,7 @@ const renderFooter = () => {
 };
 
 export default function App() {
-  const excalidrawRef = useRef(null);
+  const excalidrawRef = useRef();
 
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -40,7 +39,6 @@ export default function App() {
   const [exportWithDarkMode, setExportWithDarkMode] = useState(false);
   const [shouldAddWatermark, setShouldAddWatermark] = useState(false);
   const [theme, setTheme] = useState("light");
-  const [time, setTime] = useState(0);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -56,22 +54,17 @@ export default function App() {
     };
   }, []);
 
-
-
-  const updateImageAction = async (canvas) => {
-    return await axios
-    .post('http://localhost:8000/updateImage',{
-        canvas: canvas
-      })
-    .then(res => res.data)
-    .catch(err => Promise.reject(err));
-}
-
 const MINUTE_MS = 10000;
   useEffect(() => {
     const interval = setInterval(() => {
+      sample();
+    }, MINUTE_MS);
 
-      const currentState = JSON.parse(localStorage.getItem('state'));
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, [])
+
+const sample = async () => {
+  const currentState = JSON.parse(localStorage.getItem('state'));
       const canvas = exportToCanvas({
         elements: JSON.parse(localStorage.getItem('elements')),
         appState: {
@@ -82,13 +75,22 @@ const MINUTE_MS = 10000;
       });
       const ctx = canvas.getContext("2d");
       ctx.font = "30px Virgil";
-      updateImageAction(canvas.toDataURL());
-    }, MINUTE_MS);
+      const canvasEncoded = canvas.toDataURL();
+    
+              const blob = await exportToBlob({
+                elements: JSON.parse(localStorage.getItem('elements')),
+                mimeType: "image/png",
+                appState: {
+                  currentState,
+                  exportWithDarkMode,
+                  shouldAddWatermark
+                }
+              });
+              console.log(window.URL.createObjectURL(blob));
 
-    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  }, [])
-
-  
+      const blobLink = window.URL.createObjectURL(blob);
+      await updateImageAction(canvasEncoded, blobLink);
+}
 
   const updateScene = () => {
     const sceneData = {
@@ -247,6 +249,7 @@ const MINUTE_MS = 10000;
                   shouldAddWatermark
                 }
               });
+              console.log(window.URL.createObjectURL(blob));
               setBlobUrl(window.URL.createObjectURL(blob));
             }}
           >
