@@ -20,8 +20,11 @@
   margin: 50px;
 }
 
-:root[dir="ltr"] .excalidraw .layer-ui__wrapper .zen-mode-transition.App-menu_bottom--transition-left {
-  transform: none
+:root[dir="ltr"]
+  .excalidraw
+  .layer-ui__wrapper
+  .zen-mode-transition.App-menu_bottom--transition-left {
+  transform: none;
 }
 
 .excalidraw .panelColumn {
@@ -36,4 +39,10 @@
   &__checkbox {
     display: flex;
   }
+}
+
+.imagelist {
+  text-align: left;
+  line-height: 10px;
+  margin-bottom: 30px;
 }

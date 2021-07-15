@@ -5,7 +5,7 @@ import Excalidraw, {
   exportToBlob
 } from "@excalidraw/excalidraw";
 import Sidebar from "./sidebar/sidebar";
-import { updateImageAction } from "./actions";
+import { updateImageAction, getImageListAction } from "./actions";
 
 import "./styles.scss";
 import initialData from "./initialData";
@@ -39,6 +39,8 @@ export default function App() {
   const [exportWithDarkMode, setExportWithDarkMode] = useState(false);
   const [shouldAddWatermark, setShouldAddWatermark] = useState(false);
   const [theme, setTheme] = useState("light");
+  const [imageList, setImageList] = useState([]);
+  const [imageName, setImageName] = useState();
 
   useEffect(() => {
     const onHashChange = () => {
@@ -201,6 +203,37 @@ const sample = async () => {
         </div>
 
         <div className="export-wrapper button-wrapper">
+          <button onClick={() => {
+            getImageListAction().then(res => {
+              setImageList(res);
+            });
+          }}>Get Image List</button>
+
+          <div className="imagelist">
+            {imageList.map((image) => {
+              return(
+                <ul>
+                  <li>{image}</li>
+                  </ul>
+              )
+            })}
+          </div>
+
+          <form action={`http://localhost:8000/downloadimage/${imageName}`} style={{textAlign: 'left', marginBottom: '40px', marginTop: '20px'}}>
+          <label style={{marginRight: '7px'}}>
+            Enter Image Name to Download
+          </label>
+          <br />
+            <input
+              type="text"
+              style ={{width: '20%', marginTop: '5px'}}
+              value={imageName}
+              onChange={e => setImageName(e.target.value)}
+            />
+
+            <input type="submit" value="Submit"/>
+            </form>
+          
           <label className="export-wrapper__checkbox">
             <input
               type="checkbox"
@@ -249,7 +282,6 @@ const sample = async () => {
                   shouldAddWatermark
                 }
               });
-              console.log(window.URL.createObjectURL(blob));
               setBlobUrl(window.URL.createObjectURL(blob));
             }}
           >
