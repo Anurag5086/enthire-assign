@@ -219,7 +219,7 @@ const sample = async () => {
             })}
           </div>
 
-          <form className="imageform" action={`${process.env.BACKEND_URL}/downloadimage/${imageName}`} >
+          <form className="imageform" action={`https://enthire-backend.herokuapp.com/downloadimage/${imageName}`} >
             <label className="textlabel">
               Enter Image Name to Download
             </label>
