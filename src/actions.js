@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const updateImageAction = async (canvas, blob) => {
     return await axios
-    .post('http://localhost:8000/updateImage',{
+    .post(`${process.env.BACKEND_URL}/updateImage`,{
         canvas: canvas,
         blob: blob
       })
@@ -12,7 +12,7 @@ export const updateImageAction = async (canvas, blob) => {
 
 export const getImageListAction = async () => {
   return await axios
-  .get('http://localhost:8000/imagelist')
+  .get(`${process.env.BACKEND_URL}/imagelist`)
   .then(res => res.data)
   .catch(err => Promise.reject(err));
 };

@@ -219,20 +219,20 @@ const sample = async () => {
             })}
           </div>
 
-          <form action={`http://localhost:8000/downloadimage/${imageName}`} style={{textAlign: 'left', marginBottom: '40px', marginTop: '20px'}}>
-          <label style={{marginRight: '7px'}}>
-            Enter Image Name to Download
-          </label>
-          <br />
+          <form className="imageform" action={`${process.env.BACKEND_URL}/downloadimage/${imageName}`} >
+            <label className="textlabel">
+              Enter Image Name to Download
+            </label>
+            <br />
             <input
               type="text"
-              style ={{width: '20%', marginTop: '5px'}}
+              className="imageinput"
               value={imageName}
               onChange={e => setImageName(e.target.value)}
             />
 
             <input type="submit" value="Submit"/>
-            </form>
+          </form>
           
           <label className="export-wrapper__checkbox">
             <input
